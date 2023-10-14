@@ -1,0 +1,25 @@
+<script>
+  const circle1 = {
+    x: 200,
+    y: 400,
+    radius: 20,
+  };
+
+  const circle2 = {
+    x: 16,
+    y: 18,
+    radius: 150,
+  };
+
+  const dx = circle1.x - circle2.x;
+  const dy = circle1.y - circle2.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const sumOfRadius = circle1.radius + circle2.radius;
+  if(distance < sumOfRadius) {
+    // circles are colliding
+  } else if (distance === sumOfRadius) {
+    // circles are touching
+  } else if (distance > sumOfRadius) {
+    // no collision
+  }
+</script>
