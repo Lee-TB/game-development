@@ -1,6 +1,8 @@
 /**@type {HTMLCanvasElement} */
-const boom = new Audio();
-boom.src = 'cg1.wav';
+const shootSound = new Audio();
+shootSound.src = 'cg1.wav';
+const gameOverSound = new Audio();
+gameOverSound.src = 'GameOver.wav';
 
 window.addEventListener("load", () => {
   document.getElementById('preloader').style.display = 'none';
@@ -10,14 +12,14 @@ window.addEventListener("load", () => {
 const startButton = document.getElementById('start-btn');
 startButton.addEventListener('click', () => {
   document.getElementById('game-start').style.display = 'none';
-  boom.play();
+  shootSound.play();
   startGame();
 })
 
 const restartButton = document.getElementById('restart-btn');
 restartButton.addEventListener('click', () => {
   document.getElementById('game-over').style.display = 'none';
-  boom.play();
+  shootSound.play();
   startGame();
 })
 
@@ -45,7 +47,7 @@ function startGame() {
     constructor() {
       this.spriteWidth = 271;
       this.spriteHeight = 194;
-      this.sizeModifier = Math.random() * 0.6 + 0.2;
+      this.sizeModifier = Math.random() * 0.6 + 0.3;
       this.width = this.spriteWidth * this.sizeModifier;
       this.height = this.spriteHeight * this.sizeModifier;
       this.x = canvas.width;
@@ -188,18 +190,18 @@ function startGame() {
 
   function drawScore() {
     ctx.fillStyle = "black";
-    ctx.fillText("Score: " + score, 50, 70);
+    ctx.fillText("Score " + score, 50, 70);
     ctx.fillStyle = "white";
-    ctx.fillText("Score: " + score, 52, 72);
+    ctx.fillText("Score " + score, 52, 72);
   }
 
-  function drawGameOver() {
+  function handleGameOver() {
     document.getElementById('game-over').style.display = 'block';
+    gameOverSound.play();
   }
-
+  // shoot ravens event
   window.addEventListener("click", function (e) {
     const detectPixelColor = collisionCtx.getImageData(e.x, e.y, 1, 1);
-
     const pc = detectPixelColor.data;
     ravens.forEach((raven) => {
       if (raven.randomColors.toString() + ",255" === pc.toString()) {
@@ -208,7 +210,6 @@ function startGame() {
         explosions.push(
           new Explosion(raven.x, raven.y, raven.width, raven.height)
         );
-        console.log(explosions);
       }
     });
   });
@@ -240,7 +241,7 @@ function startGame() {
     particles = particles.filter((particle) => !particle.markedForDeletion);
 
     if (!gameOver) requestAnimationFrame(animate);
-    else drawGameOver();
+    else handleGameOver();
   }
   animate();
 }
