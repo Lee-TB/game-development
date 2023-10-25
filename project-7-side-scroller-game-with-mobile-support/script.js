@@ -16,6 +16,7 @@ window.addEventListener("load", function () {
       window.addEventListener("keydown", (e) => {
         if (
           (e.key === "ArrowUp" ||
+            e.key === " " ||
             e.key === "ArrowDown" ||
             e.key === "ArrowLeft" ||
             e.key === "ArrowRight") &&
@@ -27,6 +28,7 @@ window.addEventListener("load", function () {
       window.addEventListener("keyup", (e) => {
         if (
           (e.key === "ArrowUp" ||
+            e.key === " " ||
             e.key === "ArrowDown" ||
             e.key === "ArrowLeft" ||
             e.key === "ArrowRight") &&
@@ -53,10 +55,8 @@ window.addEventListener("load", function () {
           this.keys.push("swipe down");
           if (gameOver) restartGame();
         }
-        console.log(this.keys);
       });
       window.addEventListener("touchend", (e) => {
-        console.log("touch end");
         this.keys.splice(this.keys.indexOf("swipe up"), 1);
         this.keys.splice(this.keys.indexOf("swipe down"), 1);
       });
@@ -67,14 +67,16 @@ window.addEventListener("load", function () {
     constructor(gameWidth, gameHeight) {
       this.gameWidth = gameWidth;
       this.gameHeight = gameHeight;
+      this.spriteWidth = 573;
+      this.spriteHeight = 523;
       this.width = 200;
       this.height = 200;
       this.x = 100;
       this.y = this.gameHeight - this.height;
       this.image = playerImage;
       this.frameX = 0;
-      this.maxFrame = 8;
-      this.frameY = 0;
+      this.maxFrameX = 8;
+      this.frameY = 3;
       this.fps = 20;
       this.frameTimer = 0;
       this.frameInterval = 1000 / this.fps;
@@ -91,10 +93,10 @@ window.addEventListener("load", function () {
     draw(context) {
       context.drawImage(
         this.image,
-        this.frameX * this.width,
-        this.frameY * this.height,
-        this.width,
-        this.height,
+        this.frameX * this.spriteWidth,
+        this.frameY * this.spriteHeight,
+        this.spriteWidth,
+        this.spriteHeight,
         this.x,
         this.y,
         this.width,
@@ -105,8 +107,8 @@ window.addEventListener("load", function () {
     update(input, deltaTime, enemies) {
       // collision detection
       enemies.forEach((enemy) => {
-        const dx = (enemy.x + enemy.width / 3) - (this.x + this.width / 2);
-        const dy = (enemy.y + enemy.height / 2) - (this.y + this.height / 2 + 20);
+        const dx = enemy.x + enemy.width / 3 - (this.x + this.width / 2);
+        const dy = enemy.y + enemy.height / 2 - (this.y + this.height / 2 + 20);
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < enemy.width / 3 + this.width / 3) {
           gameOver = true;
@@ -115,7 +117,7 @@ window.addEventListener("load", function () {
 
       // sprite animation
       if (this.frameTimer > this.frameInterval) {
-        if (this.frameX >= this.maxFrame) this.frameX = 0;
+        if (this.frameX >= this.maxFrameX) this.frameX = 0;
         else this.frameX++;
         this.frameTimer = 0;
       } else {
@@ -125,13 +127,19 @@ window.addEventListener("load", function () {
       // control
       if (input.keys.indexOf("ArrowRight") > -1) {
         this.speed = 2;
-        if (input.keys.indexOf("ArrowUp") > -1 && this.onGround()) {
+        if (
+          (input.keys.indexOf("ArrowUp") > -1 ||
+            input.keys.indexOf(" ") > -1 ||
+            input.keys.indexOf("swipe up") > -1) &&
+          this.onGround()
+        ) {
           this.vy = -20;
         }
       } else if (input.keys.indexOf("ArrowLeft") > -1) {
         this.speed = -5;
         if (
           (input.keys.indexOf("ArrowUp") > -1 ||
+            input.keys.indexOf(" ") > -1 ||
             input.keys.indexOf("swipe up") > -1) &&
           this.onGround()
         ) {
@@ -139,6 +147,7 @@ window.addEventListener("load", function () {
         }
       } else if (
         (input.keys.indexOf("ArrowUp") > -1 ||
+          input.keys.indexOf(" ") > -1 ||
           input.keys.indexOf("swipe up") > -1) &&
         this.onGround()
       ) {
@@ -148,26 +157,43 @@ window.addEventListener("load", function () {
       }
       // horizontal movement
       this.x += this.speed;
+
       if (this.x < 0) this.x = 0;
       else if (this.x > this.gameWidth - this.width)
         this.x = this.gameWidth - this.width;
+
       // vertical movement
       this.y += this.vy;
+
       if (!this.onGround()) {
         this.vy += this.weight;
-        this.frameY = 1;
-        this.maxFrame = 6;
+        if (this.isJumpingUp()) {
+          this.frameY = 1;
+        } else if (this.isFallingDown()) {
+          this.frameY = 2;
+        }
+        this.maxFrameX = 6;
       } else {
         this.vy = 0;
-        this.frameY = 0;
-        this.maxFrame = 8;
+        this.frameY = 3;
+        this.maxFrameX = 8;
       }
-      if (this.y > this.gameHeight - this.height)
+
+      if (this.y > this.gameHeight - this.height) {
         this.y = this.gameHeight - this.height;
+      }
     }
 
     onGround() {
       return this.y >= this.gameHeight - this.height;
+    }
+
+    isJumpingUp() {
+      return this.vy < 0;
+    }
+
+    isFallingDown() {
+      return this.vy > 0;
     }
   }
 
@@ -248,7 +274,7 @@ window.addEventListener("load", function () {
   }
 
   function handleEnemies(deltaTime) {
-    const randomEnemyInterval = Math.random() * 2000 +1000;
+    const randomEnemyInterval = Math.random() * 2000 + 1000;
     if (enemyTimer > enemyInterval + randomEnemyInterval) {
       enemies.push(new Enemy(canvas.width, canvas.height));
       enemyTimer = 0;
