@@ -156,34 +156,38 @@ export class RunningRight extends State {
   }
 }
 
-export class JumpingLeft extends State {
+class Jumping extends State {
+  constructor(state) {
+    super(state)
+    this.jumpPower = 7;
+  }
+}
+
+export class JumpingLeft extends Jumping {
   constructor(player) {
     super("JUMPING LEFT");
     this.player = player;
   }
   enter() {
-      this.player.frameY = 3;
-      this.player.maxFrame = 6;
+    this.player.frameY = 3;
+    this.player.maxFrame = 6;
     if (this.player.onGround()) {
-      this.player.vy -= 5;
+      this.player.vy -= this.jumpPower;
     }
   }
 
   handleInput(input) {
     if (input === InputEnum.PRESS_LEFT) {
-      this.player.setState(StateEnum.JUMPING_LEFT);
-      this.player.speed = -this.player.maxSpeed;
-    }
-    else if(this.player.vy > 0) {
+      this.player.speed = -this.player.maxSpeed * 0.5;
+    } else if (input === InputEnum.PRESS_RIGHT) {
+      this.player.setState(StateEnum.JUMPING_RIGHT);
+    } else if (this.player.vy > 0) {
       this.player.setState(StateEnum.FALLING_LEFT);
-    }
-    else if (this.player.onGround()) {
-      this.player.setState(StateEnum.STANDING_LEFT);
     }
   }
 }
 
-export class JumpingRight extends State {
+export class JumpingRight extends Jumping {
   constructor(player) {
     super("JUMPING RIGHT");
     this.player = player;
@@ -193,17 +197,18 @@ export class JumpingRight extends State {
     this.player.frameY = 2;
     this.player.maxFrame = 6;
     if (this.player.onGround()) {
-      this.player.vy -= 5;
+      this.player.vy -= this.jumpPower;
     }
   }
 
   handleInput(input) {
     if (input === InputEnum.PRESS_RIGHT) {
-      this.player.setState(StateEnum.JUMPING_RIGHT);
-      this.player.speed = this.player.maxSpeed;
-    } else if(this.player.vy > 0) {
+      this.player.speed = this.player.maxSpeed * 0.5;
+    } else if (input === InputEnum.PRESS_LEFT) {
+      this.player.setState(StateEnum.JUMPING_LEFT);
+    } else if (this.player.vy > 0) {
       this.player.setState(StateEnum.FALLING_RIGHT);
-    }    
+    }
   }
 }
 

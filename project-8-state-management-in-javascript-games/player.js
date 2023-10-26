@@ -44,7 +44,7 @@ export default class Player {
     this.maxSpeed = 5;
     this.fps = 30;
     this.frameTimer = 0;
-    this.frameInterval = 1000/this.fps;
+    this.frameInterval = 1000 / this.fps;
   }
 
   draw(context) {
@@ -64,8 +64,8 @@ export default class Player {
   update(inputKey, deltaTime) {
     this.currentState.handleInput(inputKey);
 
-    // Sprite animation    
-    if(this.frameTimer > this.frameInterval){
+    // Sprite animation
+    if (this.frameTimer > this.frameInterval) {
       if (this.frameX < this.maxFrame) this.frameX++;
       else this.frameX = 0;
       this.frameTimer = 0;
