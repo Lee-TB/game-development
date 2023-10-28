@@ -3,6 +3,9 @@ export const states = {
   RUNNING: 1,
   JUMPING: 2,
   FALLING: 3,
+  ROLLING: 4,
+  DIVING: 5,
+  HIT: 6
 };
 
 class State {
@@ -17,8 +20,8 @@ export class Sitting extends State {
   }
 
   enter() {
-    this.player.frameY = 5;
     this.player.maxFrame = 4;
+    this.player.frameY = 5;
     this.player.game.speed = 0;
   }
 
@@ -60,7 +63,7 @@ export class Jumping extends State {
     this.player.frameY = 1;
     this.player.maxFrame = 6;
     if (this.player.onGround()) {
-      this.player.vy = -10;      
+      this.player.vy = -15;      
     }
   }
 
@@ -83,7 +86,49 @@ export class Falling extends State {
 
   handleInput(input) {
     if (this.player.onGround()) {
-      this.player.setState(states.SITTING);
+      this.player.setState(states.RUNNING);
     }
+  }
+}
+
+export class Rolling extends State {
+  constructor(player) {
+    super(player);
+  }
+
+  enter() {
+    this.player.frameY = 6;
+    this.player.maxFrame = 6;
+  }
+
+  handleInput(input) {
+  }
+}
+
+export class Diving extends State {
+  constructor(player) {
+    super(player);
+  }
+
+  enter() {
+    this.player.frameY = 2;
+    this.player.maxFrame = 6;
+  }
+
+  handleInput(input) {
+  }
+}
+
+export class Hit extends State {
+  constructor(player) {
+    super(player);
+  }
+
+  enter() {
+    this.player.frameY = 2;
+    this.player.maxFrame = 6;
+  }
+
+  handleInput(input) {
   }
 }
