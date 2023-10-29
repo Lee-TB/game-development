@@ -1,5 +1,6 @@
 class Enemy {
-  constructor() {
+  constructor(game) {
+    this.game = game;
     this.frameX = 0;
     this.frameY = 0;
     this.fps = 20;
@@ -12,8 +13,8 @@ class Enemy {
 
   update(deltaTime) {
     // Movement
-    this.x -= this.speedX;
-    this.y += this.speedY;
+    this.x -= this.speedX * this.game.speed;
+    this.y += this.speedY * this.game.speed;
 
     if (this.frameTimer > this.frameInterval) {
       this.frameTimer = 0;
@@ -44,8 +45,7 @@ class Enemy {
 
 export class FlyingEnemy extends Enemy {
   constructor(game) {
-    super();
-    this.game = game;
+    super(game);    
     this.width = 60;
     this.height = 44;
     this.x = this.game.width + (Math.random() * this.game.width) / 2;
@@ -71,8 +71,7 @@ export class FlyingEnemy extends Enemy {
 
 export class GroundEnemy extends Enemy {
   constructor(game) {
-    super();
-    this.game = game;
+    super(game);    
     this.width = 60;
     this.height = 87;
     this.x = this.game.width;
@@ -92,8 +91,7 @@ export class GroundEnemy extends Enemy {
 
 export class ClimbingEnemy extends Enemy {
   constructor(game) {
-    super();
-    this.game = game;
+    super(game);    
     this.width = 120;
     this.height = 144;
     this.x = this.game.width;
