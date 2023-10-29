@@ -31,7 +31,8 @@ window.addEventListener("load", function () {
       this.fontColor = "black";
       this.player.currentState = this.player.states[states.SITTING];
       this.player.currentState.enter();
-      this.maxParticle = 100
+      this.maxParticle = 100;
+      this.maxEnemies = 10;
     }
 
     update(deltaTime) {
@@ -44,20 +45,24 @@ window.addEventListener("load", function () {
         this.addEnemy();
       } else this.enemyTimer += deltaTime;
 
+      if (this.enemies.length > this.maxEnemies) {
+        this.enemies = this.enemies.slice(0, this.maxEnemies);
+      }
       this.enemies = this.enemies.filter((enemy) => !enemy.markForDeletion);
       this.enemies.forEach((enemy) => {
         enemy.update(deltaTime);
-      });
+      });      
 
       // handle Particles
-      if(this.particles.length>this.maxParticle) {
+      if (this.particles.length > this.maxParticle) {
         this.particles = this.particles.slice(0, this.maxParticle);
       }
-      console.log(this.particles);
-      this.particles = this.particles.filter(particle => !particle.markForDeletion);  
-      this.particles.forEach(particle => {
-        particle.update(deltaTime)
-      })      
+      this.particles = this.particles.filter(
+        (particle) => !particle.markForDeletion
+      );
+      this.particles.forEach((particle) => {
+        particle.update(deltaTime);
+      });
     }
 
     draw(context) {
@@ -67,18 +72,18 @@ window.addEventListener("load", function () {
         enemy.draw(context);
       });
       this.particles.forEach((particle) => {
-        particle.draw(context);        
-      });      
+        particle.draw(context);
+      });
       this.UI.draw(context);
     }
 
     addEnemy() {
       if (this.speed > 0 && Math.random() < 0.5) {
-        this.enemies.push(new GroundEnemy(this));
+        this.enemies.unshift(new GroundEnemy(this));
       } else if (this.speed > 0) {
-        this.enemies.push(new ClimbingEnemy(this));
+        this.enemies.unshift(new ClimbingEnemy(this));
       }
-      this.enemies.push(new FlyingEnemy(this));
+      this.enemies.unshift(new FlyingEnemy(this));
     }
   }
 
