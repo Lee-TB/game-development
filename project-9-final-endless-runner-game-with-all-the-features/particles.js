@@ -4,16 +4,16 @@ class Particle {
     this.markForDeletion = false;
     this.fps = 60;
     this.timer = 0;
-    this.timeInterval = 1000/this.fps;
+    this.timeInterval = 1000 / this.fps;
   }
 
   update(deltaTime) {
-    if(this.timer > this.timeInterval) {      
+    if (this.timer > this.timeInterval) {
       this.timer = 0;
       this.x -= this.speedX + this.game.speed;
       this.y -= this.speedY;
       this.size *= 0.95;
-      if (this.size <= 0.9) this.markForDeletion = true;
+      if (this.size <= 0.5) this.markForDeletion = true;
     } else this.timer += deltaTime;
   }
 }
@@ -76,5 +76,28 @@ export class Fire extends Particle {
       this.size
     );
     context.restore();
+  }
+}
+
+export class Splash extends Particle {
+  constructor(game, x, y) {
+    super(game);
+    this.size = Math.random() * 100 + 100;
+    this.x = x;
+    this.y = y;
+    this.speedX = Math.random() * 20 - 10;
+    this.speedY = Math.random() * 2 + 2;
+    this.gravity = -2;
+    this.image = document.getElementById("fire");
+  }
+
+  update(deltaTime) {
+    super.update(deltaTime);
+    this.gravity += 0.05;
+    this.y += this.gravity;
+  }
+
+  draw(context) {
+    context.drawImage(this.image, this.x, this.y, this.size, this.size);
   }
 }

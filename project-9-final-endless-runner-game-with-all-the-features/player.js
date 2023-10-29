@@ -9,6 +9,7 @@ export class Player {
     this.x = 0;
     this.y = this.ground;
     this.vy = 0;
+    this.jumpPower = 15;
     this.weight = 0.3;
     this.playerImage = document.getElementById("playerImage");
     this.frameX = 0;
