@@ -17,7 +17,7 @@ window.addEventListener("load", function () {
       this.width = width;
       this.height = height;
       this.groundMargin = 80;
-      this.speed = 1;
+      this.speed = 3;
       this.background = new Background(this);
       this.player = new Player(this);
       this.input = new InputHandler(this);
@@ -55,7 +55,9 @@ window.addEventListener("load", function () {
       // handle Enemies
       if (this.enemyTimer > this.enemyInterval) {
         this.enemyTimer = 0;
-        this.addEnemy();
+        if(this.player.currentState.constructor !== this.player.states[states.SITTING]){
+          this.addEnemy();
+        }
       } else this.enemyTimer += deltaTime;
 
       if (this.enemies.length > this.maxEnemies) {

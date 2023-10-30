@@ -9,11 +9,12 @@ class Enemy {
     this.markedForDeletion = false;
     this.speedX = 0;
     this.speedY = 0;
-    this.speed = this.game.speed;
+    this.speed = 1;
   }
 
   update(deltaTime) {
     // Movement
+    this.speed = this.game.speed || 1 ;
     this.x -= this.speedX * this.speed;
     this.y += this.speedY * this.speed;
 

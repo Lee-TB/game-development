@@ -28,7 +28,7 @@ export class Sitting extends State {
   }
 
   handleInput(input) {
-    if (input.keys.includes("ArrowLeft") || input.keys.includes("ArrowRight")) {
+    if (input.keys.includes("ArrowLeft") || input.keys.includes("ArrowRight")  || input.keys.includes("ArrowUp")) {
       this.game.player.setState(states.RUNNING);
     } else if (input.keys.includes("Enter")) {
       this.game.player.setState(states.ROLLING);
@@ -147,7 +147,6 @@ export class Diving extends State {
   }
 
   enter() {
-    this.game.player.game.speed *= 3;
     this.game.player.frameY = 6;
     this.game.player.maxFrame = 6;
     this.game.player.vy = 15;
