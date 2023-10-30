@@ -115,6 +115,7 @@ export class Rolling extends State {
   }
 
   enter() {
+    this.game.player.game.speed *= 3;
     this.game.player.frameY = 6;
     this.game.player.maxFrame = 6;
   }
@@ -146,9 +147,9 @@ export class Diving extends State {
   }
 
   enter() {
+    this.game.player.game.speed *= 3;
     this.game.player.frameY = 6;
     this.game.player.maxFrame = 6;
-    this.game.player.game.speed *= 3;
     this.game.player.vy = 15;
   }
 
@@ -180,9 +181,17 @@ export class Hit extends State {
   }
 
   enter() {
-    this.game.player.frameY = 2;
-    this.game.player.maxFrame = 6;
+    this.game.player.frameX = 0;
+    this.game.player.maxFrame = 10;
+    this.game.player.frameY = 4;
+    this.game.speed = 0;
   }
-
-  handleInput(input) {}
+  
+  handleInput(input) {
+    this.game.player.speed = 0
+    if(this.game.player.frameX >= 10 && this.game.player.onGround()) {
+      this.game.player.setState(states.RUNNING)
+    } 
+  }
 }
+

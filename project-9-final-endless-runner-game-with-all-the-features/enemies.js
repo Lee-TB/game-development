@@ -6,7 +6,7 @@ class Enemy {
     this.fps = 20;
     this.frameInterval = 1000 / this.fps;
     this.frameTimer = 0;
-    this.markForDeletion = false;
+    this.markedForDeletion = false;
     this.speedX = 0;
     this.speedY = 0;
     this.speed = this.game.speed;
@@ -24,7 +24,7 @@ class Enemy {
     } else this.frameTimer += deltaTime;
 
     // Off screen enemy deletion
-    if (this.x < -this.width) this.markForDeletion = true;
+    if (this.x < -this.width) this.markedForDeletion = true;
   }
 
   draw(context) {
@@ -104,7 +104,7 @@ export class ClimbingEnemy extends Enemy {
   }
   update(deltaTime) {
     super.update(deltaTime);
-    if (this.y < -this.height) this.markForDeletion = true;
+    if (this.y < -this.height) this.markedForDeletion = true;
   }
 
   draw(context) {

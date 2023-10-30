@@ -1,4 +1,14 @@
-import { states, Sitting, Running, Jumping, Falling, Rolling, Diving,Hit } from "./playerState.js";
+import {
+  states,
+  Sitting,
+  Running,
+  Jumping,
+  Falling,
+  Rolling,
+  Diving,
+  Hit,
+} from "./playerState.js";
+import { CollisionAnimation } from "./CollisionAnimation.js";
 
 export class Player {
   constructor(game) {
@@ -29,7 +39,6 @@ export class Player {
       [states.DIVING]: new Diving(this.game),
       [states.HIT]: new Hit(this.game),
     };
-
   }
 
   update(input, deltaTime) {
@@ -96,9 +105,24 @@ export class Player {
         enemy.y < this.y + this.height &&
         enemy.y + enemy.height > this.y
       ) {
-        enemy.markForDeletion = true;
-        this.game.score++;
-      } else {
+        enemy.markedForDeletion = true;
+        this.game.collisions.unshift(
+          new CollisionAnimation(
+            this.game,
+            enemy.x + enemy.width / 2,
+            enemy.y + enemy.height / 2
+          )
+        );
+        if (
+          this.currentState.constructor ===
+            this.states[states.ROLLING].constructor ||
+          this.currentState.constructor ===
+            this.states[states.DIVING].constructor
+        ) {
+          this.game.score++;
+        } else {
+          this.setState(states.HIT);
+        }
       }
     });
   }

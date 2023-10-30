@@ -24,6 +24,7 @@ window.addEventListener("load", function () {
       this.UI = new UI(this);
       this.enemies = [];
       this.particles = [];
+      this.collisions = [];
       this.enemyTimer = 0;
       this.enemyInterval = 1000;
       this.debug = false;
@@ -33,11 +34,20 @@ window.addEventListener("load", function () {
       this.player.currentState.enter();
       this.maxParticle = 100;
       this.maxEnemies = 10;
+      this.time = 0;
+      this.maxTime = 10_000;
+      this.gameOver = false;
     }
 
     update(deltaTime) {
       this.background.update();
       this.player.update(this.input, deltaTime);
+
+      // handle Time
+      if (this.time > this.maxTime) {
+        this.gameOver = true;
+      }      
+      this.time += deltaTime;
 
       // handle Enemies
       if (this.enemyTimer > this.enemyInterval) {
@@ -48,20 +58,28 @@ window.addEventListener("load", function () {
       if (this.enemies.length > this.maxEnemies) {
         this.enemies = this.enemies.slice(0, this.maxEnemies);
       }
-      this.enemies = this.enemies.filter((enemy) => !enemy.markForDeletion);
+      this.enemies = this.enemies.filter((enemy) => !enemy.markedForDeletion);
       this.enemies.forEach((enemy) => {
         enemy.update(deltaTime);
-      });      
+      });
 
       // handle Particles
       if (this.particles.length > this.maxParticle) {
         this.particles = this.particles.slice(0, this.maxParticle);
       }
       this.particles = this.particles.filter(
-        (particle) => !particle.markForDeletion
+        (particle) => !particle.markedForDeletion
       );
       this.particles.forEach((particle) => {
         particle.update(deltaTime);
+      });
+
+      // handle Collision sprites
+      this.collisions.forEach((collision, index) => {
+        collision.update(deltaTime);
+        if (collision.markedForDeletion) {
+          this.collisions.splice(index, 1);
+        }
       });
     }
 
@@ -73,6 +91,10 @@ window.addEventListener("load", function () {
       });
       this.particles.forEach((particle) => {
         particle.draw(context);
+      });
+      console.log(this.collisions);
+      this.collisions.forEach((collision) => {
+        collision.draw(context);
       });
       this.UI.draw(context);
     }
@@ -97,7 +119,10 @@ window.addEventListener("load", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.update(deltaTime);
     game.draw(ctx);
-    requestAnimationFrame(animate);
+
+    if (!game.gameOver){
+      requestAnimationFrame(animate);
+    }
   }
-  animate();
+   animate();
 });

@@ -1,7 +1,7 @@
 class Particle {
   constructor(game) {
     this.game = game;
-    this.markForDeletion = false;
+    this.markedForDeletion = false;
     this.fps = 60;
     this.timer = 0;
     this.timeInterval = 1000 / this.fps;
@@ -13,7 +13,7 @@ class Particle {
       this.x -= this.speedX + this.game.speed;
       this.y -= this.speedY;
       this.size *= 0.95;
-      if (this.size <= 0.5) this.markForDeletion = true;
+      if (this.size <= 0.5) this.markedForDeletion = true;
     } else this.timer += deltaTime;
   }
 }
