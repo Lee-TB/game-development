@@ -29,9 +29,16 @@ export class Sitting extends State {
   }
 
   handleInput(input) {
-    if (input.keys.includes(Key.ARROW_LEFT) || input.keys.includes(Key.ARROW_RIGHT)  || input.keys.includes(Key.ARROW_UP)) {
+    if (
+      input.keys.includes(Key.ARROW_LEFT) ||
+      input.keys.includes(Key.ARROW_RIGHT) ||
+      input.keys.includes(Key.ARROW_UP)
+    ) {
       this.game.player.setState(states.RUNNING);
-    } else if (input.keys.includes(Key.CONTROL)) {
+    } else if (
+      input.keys.includes(Key.CONTROL) &&
+      this.game.player.stamina > 0
+    ) {
       this.game.player.setState(states.ROLLING);
     }
   }
@@ -61,7 +68,7 @@ export class Running extends State {
     } else if (input.keys.includes(Key.ARROW_UP)) {
       this.game.player.setState(states.JUMPING);
     }
-    if (input.keys.includes(Key.CONTROL)) {
+    if (input.keys.includes(Key.CONTROL) && this.game.player.stamina > 0) {
       this.game.player.setState(states.ROLLING);
     }
   }
@@ -83,9 +90,12 @@ export class Jumping extends State {
   handleInput(input) {
     if (this.game.player.vy > 0) {
       this.game.player.setState(states.FALLING);
-    } else if (input.keys.includes(Key.CONTROL)) {
+    } else if (
+      input.keys.includes(Key.CONTROL) &&
+      this.game.player.stamina > 10
+    ) {
       this.game.player.setState(states.ROLLING);
-    } else if (input.keys.includes(Key.ARROW_DOWN)) {
+    } else if (input.keys.includes(Key.ARROW_DOWN) && this.game.player.stamina > 30) {
       this.game.player.setState(states.DIVING);
     }
   }
@@ -104,7 +114,7 @@ export class Falling extends State {
   handleInput(input) {
     if (this.game.player.onGround()) {
       this.game.player.setState(states.RUNNING);
-    } else if (input.keys.includes(Key.ARROW_DOWN)) {
+    } else if (input.keys.includes(Key.ARROW_DOWN) && this.game.player.stamina > 30) {
       this.game.player.setState(states.DIVING);
     }
   }
@@ -118,21 +128,33 @@ export class Rolling extends State {
   enter() {
     this.game.player.game.speed *= 3;
     this.game.player.frameY = 6;
-    this.game.player.maxFrame = 6;
+    this.game.player.maxFrame = 6;    
   }
 
   handleInput(input) {
+    this.game.player.stamina -= 1;
+    this.game.player.staminaDelay = 300;
+
     this.game.particles.unshift(
       new Fire(this.game, this.game.player.x, this.game.player.y)
     );
-    if (!input.keys.includes(Key.CONTROL) && this.game.player.onGround()) {
+    if (
+      (!input.keys.includes(Key.CONTROL) && this.game.player.onGround()) ||
+      this.game.player.stamina < 10
+    ) {
       this.game.player.setState(states.RUNNING);
-    } else if (!input.keys.includes(Key.CONTROL) && !this.game.player.onGround()) {
+    } else if (
+      !input.keys.includes(Key.CONTROL) &&
+      !this.game.player.onGround()
+    ) {
       this.game.player.setState(states.JUMPING);
-    } else if (input.keys.includes(Key.CONTROL) && !this.game.player.onGround() && input.keys.includes(Key.ARROW_DOWN)) {
+    } else if (
+      input.keys.includes(Key.CONTROL) &&
+      !this.game.player.onGround() &&
+      input.keys.includes(Key.ARROW_DOWN)
+    ) {
       this.game.player.setState(states.DIVING);
-    }
-    else if (
+    } else if (
       input.keys.includes(Key.CONTROL) &&
       input.keys.includes(Key.ARROW_UP) &&
       this.game.player.onGround()
@@ -151,6 +173,7 @@ export class Diving extends State {
     this.game.player.frameY = 6;
     this.game.player.maxFrame = 6;
     this.game.player.vy = 15;
+    this.game.player.stamina -= 30;    
   }
 
   handleInput(input) {
@@ -169,7 +192,10 @@ export class Diving extends State {
         );
       }
       this.game.player.setState(states.RUNNING);
-    } else if (input.keys.includes(Key.CONTROL) && this.game.player.onGround()) {
+    } else if (
+      input.keys.includes(Key.CONTROL) &&
+      this.game.player.onGround()
+    ) {
       this.game.player.setState(states.ROLLING);
     }
   }
@@ -186,12 +212,11 @@ export class Hit extends State {
     this.game.player.frameY = 4;
     this.game.speed = 0;
   }
-  
+
   handleInput(input) {
-    this.game.player.speed = 0
-    if(this.game.player.frameX >= 10 && this.game.player.onGround()) {
-      this.game.player.setState(states.RUNNING)
-    } 
+    this.game.player.speed = 0;
+    if (this.game.player.frameX >= 10 && this.game.player.onGround()) {
+      this.game.player.setState(states.RUNNING);
+    }
   }
 }
-

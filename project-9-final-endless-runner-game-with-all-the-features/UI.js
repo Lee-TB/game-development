@@ -19,7 +19,7 @@ export class UI {
     // time
     context.font = this.fontSize * 0.8 + "px " + this.fontFamily;
     context.fillText(
-      "Time: " + (this.game.time * 0.001).toFixed(2) + " s",
+      "Time: " + (this.game.time * 0.001).toFixed(2),
       20,
       80
     );
@@ -27,6 +27,21 @@ export class UI {
     for (let i = 0; i < this.game.lives; i++) {
       context.drawImage(this.livesImage, 30 * i  + 20, 95, 25, 25);
     }
+    // stamina
+    context.font = this.fontSize * 0.5 + "px " + this.fontFamily;
+    context.fillRect(      
+      20,
+      130,
+      150 * this.game.player.stamina/100,
+      10
+    );
+    context.strokeRect(      
+      20,
+      130,
+      150,
+      10
+    );
+
 
     // game over
     if (this.game.gameOver) {

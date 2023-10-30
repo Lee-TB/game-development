@@ -17,7 +17,6 @@ export class InputHandler {
     window.addEventListener("keydown", (e) => {
       if (this.keys.indexOf(e.key) === -1 && KeyValues.includes(e.key)) {        
         this.keys.push(e.key);
-        console.log(this.keys);
       }
       if (e.key === "x") {
         this.game.debug = !this.game.debug;

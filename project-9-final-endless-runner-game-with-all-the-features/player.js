@@ -41,11 +41,29 @@ export class Player {
       [states.DIVING]: new Diving(this.game),
       [states.HIT]: new Hit(this.game),
     };
+
+    this.stamina = 100;
+    this.staminaRecoverySpeed = 1;
+    this.staminaTimer = 0;    
+    this.staminaInterval = 10;
+    this.staminaDelay = 0;
   }
 
   update(input, deltaTime) {
     this.checkCollision();
     this.currentState.handleInput(input);
+
+    // Stamina Recovery    
+    this.staminaDelay -= deltaTime;
+    if(this.staminaDelay <= 0) {
+      if(this.staminaTimer > this.staminaInterval) {
+        this.staminaTimer = 0;
+        if(this.stamina < 100) {
+          this.stamina += this.staminaRecoverySpeed;
+        }
+      } else this.staminaTimer += deltaTime;
+    }
+    if(this.stamina < 0) this.stamina = 0;
 
     // Horizontal movement
     this.x += this.speed;
