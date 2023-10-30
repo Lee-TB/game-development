@@ -33,7 +33,7 @@ window.addEventListener("load", function () {
       this.player.currentState = this.player.states[states.SITTING];
       this.player.currentState.enter();
       this.maxParticle = 100;
-      this.maxEnemies = 10;
+      this.maxEnemies = 20;
       this.time = 0;
       this.maxTime = 60_000;
       this.gameOver = false;

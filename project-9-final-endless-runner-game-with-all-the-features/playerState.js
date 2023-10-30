@@ -1,4 +1,5 @@
 import { Dust, Fire, Splash } from "./particles.js";
+import { Key } from "./input.js";
 
 export const states = {
   SITTING: 0,
@@ -28,9 +29,9 @@ export class Sitting extends State {
   }
 
   handleInput(input) {
-    if (input.keys.includes("ArrowLeft") || input.keys.includes("ArrowRight")  || input.keys.includes("ArrowUp")) {
+    if (input.keys.includes(Key.ARROW_LEFT) || input.keys.includes(Key.ARROW_RIGHT)  || input.keys.includes(Key.ARROW_UP)) {
       this.game.player.setState(states.RUNNING);
-    } else if (input.keys.includes("Enter")) {
+    } else if (input.keys.includes(Key.CONTROL)) {
       this.game.player.setState(states.ROLLING);
     }
   }
@@ -55,12 +56,12 @@ export class Running extends State {
         this.game.player.y + this.game.player.height
       )
     );
-    if (input.keys.includes("ArrowDown") && input.keys.length === 1) {
+    if (input.keys.includes(Key.ARROW_DOWN) && input.keys.length === 1) {
       this.game.player.setState(states.SITTING);
-    } else if (input.keys.includes("ArrowUp")) {
+    } else if (input.keys.includes(Key.ARROW_UP)) {
       this.game.player.setState(states.JUMPING);
     }
-    if (input.keys.includes("Enter")) {
+    if (input.keys.includes(Key.CONTROL)) {
       this.game.player.setState(states.ROLLING);
     }
   }
@@ -82,9 +83,9 @@ export class Jumping extends State {
   handleInput(input) {
     if (this.game.player.vy > 0) {
       this.game.player.setState(states.FALLING);
-    } else if (input.keys.includes("Enter")) {
+    } else if (input.keys.includes(Key.CONTROL)) {
       this.game.player.setState(states.ROLLING);
-    } else if (input.keys.includes("ArrowDown")) {
+    } else if (input.keys.includes(Key.ARROW_DOWN)) {
       this.game.player.setState(states.DIVING);
     }
   }
@@ -103,7 +104,7 @@ export class Falling extends State {
   handleInput(input) {
     if (this.game.player.onGround()) {
       this.game.player.setState(states.RUNNING);
-    } else if (input.keys.includes("ArrowDown")) {
+    } else if (input.keys.includes(Key.ARROW_DOWN)) {
       this.game.player.setState(states.DIVING);
     }
   }
@@ -124,16 +125,16 @@ export class Rolling extends State {
     this.game.particles.unshift(
       new Fire(this.game, this.game.player.x, this.game.player.y)
     );
-    if (!input.keys.includes("Enter") && this.game.player.onGround()) {
+    if (!input.keys.includes(Key.CONTROL) && this.game.player.onGround()) {
       this.game.player.setState(states.RUNNING);
-    } else if (!input.keys.includes("Enter") && !this.game.player.onGround()) {
+    } else if (!input.keys.includes(Key.CONTROL) && !this.game.player.onGround()) {
       this.game.player.setState(states.JUMPING);
-    } else if (input.keys.includes("Enter") && !this.game.player.onGround() && input.keys.includes("ArrowDown")) {
+    } else if (input.keys.includes(Key.CONTROL) && !this.game.player.onGround() && input.keys.includes(Key.ARROW_DOWN)) {
       this.game.player.setState(states.DIVING);
     }
     else if (
-      input.keys.includes("Enter") &&
-      input.keys.includes("ArrowUp") &&
+      input.keys.includes(Key.CONTROL) &&
+      input.keys.includes(Key.ARROW_UP) &&
       this.game.player.onGround()
     ) {
       this.game.player.vy = -this.game.player.jumpPower;
@@ -168,7 +169,7 @@ export class Diving extends State {
         );
       }
       this.game.player.setState(states.RUNNING);
-    } else if (input.keys.includes("Enter") && this.game.player.onGround()) {
+    } else if (input.keys.includes(Key.CONTROL) && this.game.player.onGround()) {
       this.game.player.setState(states.ROLLING);
     }
   }

@@ -1,35 +1,31 @@
+export const Key = {
+  ARROW_UP: "ArrowUp",
+  ARROW_DOWN: "ArrowDown",
+  ARROW_LEFT: "ArrowLeft",
+  ARROW_RIGHT: "ArrowRight",
+  SPACE: " ",
+  SHIFT: "Shift",
+  CONTROL: "Control",
+};
+
+const KeyValues = Object.values(Key);
 export class InputHandler {
   constructor(game) {
     this.game = game;
     this.keys = [];
+
     window.addEventListener("keydown", (e) => {
-      if (
-        (e.key === "ArrowDown" ||
-          e.key === "ArrowUp" ||
-          e.key === "ArrowLeft" ||
-          e.key === "ArrowRight" ||
-          e.key === "Enter") &&
-        this.keys.indexOf(e.key) === -1
-      ) {
+      if (this.keys.indexOf(e.key) === -1 && KeyValues.includes(e.key)) {        
         this.keys.push(e.key);
         console.log(this.keys);
       }
-
-      if (e.key === "d") {
+      if (e.key === "x") {
         this.game.debug = !this.game.debug;
       }
     });
+
     window.addEventListener("keyup", (e) => {
-      if (
-        e.key === "ArrowDown" ||
-        e.key === "ArrowUp" ||
-        e.key === "ArrowLeft" ||
-        e.key === "ArrowRight" ||
-        e.key === "Enter"
-      ) {
-        this.keys.splice(this.keys.indexOf(e.key), 1);
-        console.log(this.keys);
-      }
+      this.keys.splice(this.keys.indexOf(e.key), 1);
     });
   }
 }

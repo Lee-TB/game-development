@@ -10,6 +10,7 @@ import {
 } from "./playerState.js";
 import { CollisionAnimation } from "./CollisionAnimation.js";
 import { FloatingMessage } from "./FloatingMessages.js";
+import { Key } from "./input.js";
 
 export class Player {
   constructor(game) {
@@ -48,8 +49,8 @@ export class Player {
 
     // Horizontal movement
     this.x += this.speed;
-    if (input.keys.includes("ArrowRight")) this.speed = this.maxSpeed;
-    else if (input.keys.includes("ArrowLeft")) this.speed = -this.maxSpeed;
+    if (input.keys.includes(Key.ARROW_RIGHT)) this.speed = this.maxSpeed;
+    else if (input.keys.includes(Key.ARROW_LEFT)) this.speed = -this.maxSpeed;
     else this.speed = 0;
     // Horizontal boundaries
     if (this.x < 0) this.x = 0;
