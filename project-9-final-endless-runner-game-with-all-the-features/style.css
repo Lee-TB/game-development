@@ -24,6 +24,7 @@
 #enemy_plant,
 #enemy_fly,
 #fire,
-#collisionAnimation {
+#collisionAnimation,
+#lives {
   display: none;
 }

@@ -9,7 +9,7 @@ import { states } from "./playerState.js";
 window.addEventListener("load", function () {
   const canvas = document.getElementById("canvas1");
   const ctx = canvas.getContext("2d");
-  canvas.width = 500;
+  canvas.width = 900;
   canvas.height = 500;
 
   class Game {
@@ -35,8 +35,11 @@ window.addEventListener("load", function () {
       this.maxParticle = 100;
       this.maxEnemies = 10;
       this.time = 0;
-      this.maxTime = 10_000;
+      this.maxTime = 60_000;
       this.gameOver = false;
+      this.lives = 5;
+      this.floatingMessages = [];
+      this.winningScore = 10;
     }
 
     update(deltaTime) {
@@ -46,7 +49,7 @@ window.addEventListener("load", function () {
       // handle Time
       if (this.time > this.maxTime) {
         this.gameOver = true;
-      }      
+      }
       this.time += deltaTime;
 
       // handle Enemies
@@ -56,16 +59,25 @@ window.addEventListener("load", function () {
       } else this.enemyTimer += deltaTime;
 
       if (this.enemies.length > this.maxEnemies) {
-        this.enemies = this.enemies.slice(0, this.maxEnemies);
+        this.enemies.length = this.maxEnemies;
       }
       this.enemies = this.enemies.filter((enemy) => !enemy.markedForDeletion);
       this.enemies.forEach((enemy) => {
         enemy.update(deltaTime);
       });
 
+      // handle messages
+      this.floatingMessages.forEach((message) => {
+        message.update();
+      });
+      this.floatingMessages = this.floatingMessages.filter((message) => {
+        if (message.markedForDeletion) this.score++;
+        return !message.markedForDeletion;
+      });
+
       // handle Particles
       if (this.particles.length > this.maxParticle) {
-        this.particles = this.particles.slice(0, this.maxParticle);
+        this.particles.length = this.maxParticle;
       }
       this.particles = this.particles.filter(
         (particle) => !particle.markedForDeletion
@@ -89,10 +101,12 @@ window.addEventListener("load", function () {
       this.enemies.forEach((enemy) => {
         enemy.draw(context);
       });
+      this.floatingMessages.forEach((message) => {
+        message.draw(context);
+      });
       this.particles.forEach((particle) => {
         particle.draw(context);
       });
-      console.log(this.collisions);
       this.collisions.forEach((collision) => {
         collision.draw(context);
       });
@@ -120,9 +134,9 @@ window.addEventListener("load", function () {
     game.update(deltaTime);
     game.draw(ctx);
 
-    if (!game.gameOver){
+    if (!game.gameOver) {
       requestAnimationFrame(animate);
     }
   }
-   animate();
+  animate();
 });
