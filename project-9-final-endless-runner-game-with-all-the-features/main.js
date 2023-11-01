@@ -12,6 +12,14 @@ window.addEventListener("load", function () {
   canvas.width = 900;
   canvas.height = 500;
 
+  // start back ground;
+  ctx.drawImage(layer1, 0, 0, 1667, 500);
+  ctx.drawImage(layer2, 0, 0, 1667, 500);
+  ctx.drawImage(layer3, 0, 0, 1667, 500);
+  ctx.drawImage(layer4, 0, 0, 1667, 500);
+  ctx.drawImage(layer5, 0, 0, 1667, 500);
+  ctx.drawImage(playerImage, 0, 5*91.3, 100, 91.3, canvas.width/2 - 50, canvas.height - 170, 100, 91.3);
+
   class Game {
     constructor(width, height) {
       this.width = width;
@@ -55,7 +63,10 @@ window.addEventListener("load", function () {
       // handle Enemies
       if (this.enemyTimer > this.enemyInterval) {
         this.enemyTimer = 0;
-        if(this.player.currentState.constructor !== this.player.states[states.SITTING]){
+        if (
+          this.player.currentState.constructor !==
+          this.player.states[states.SITTING]
+        ) {
           this.addEnemy();
         }
       } else this.enemyTimer += deltaTime;
@@ -125,8 +136,52 @@ window.addEventListener("load", function () {
     }
   }
 
-  const game = new Game(canvas.width, canvas.height);
+  let game = null;
   let lastTime = 0;
+  let animateID;
+  let isPauseGame = true;
+
+  startButton.addEventListener("click", () => {
+    startGame();
+    startButton.style.display = "none";
+  });
+
+  restartButton.addEventListener("click", () => {
+    startGame();
+    restartButton.style.display = "none";
+  });
+
+  pauseButton.addEventListener("click", () => {
+    pauseGame();
+  });
+
+  resumeButton.addEventListener("click", () => {
+    resumeGame();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (isPauseGame) {
+        pauseGame();
+      } else {
+        resumeGame();
+      }
+      isPauseGame = !isPauseGame;
+    }
+  });
+
+  function startGame() {
+    game = new Game(canvas.width, canvas.height);
+    animateID = requestAnimationFrame(animate);
+  }
+
+  function resumeGame() {
+    animateID = requestAnimationFrame(animate);
+  }
+
+  function pauseGame() {
+    cancelAnimationFrame(animateID);
+  }
 
   function animate(timeStamp = 0) {
     const deltaTime = timeStamp - lastTime;
@@ -136,9 +191,11 @@ window.addEventListener("load", function () {
     game.update(deltaTime);
     game.draw(ctx);
 
-    if (!game.gameOver) {
-      requestAnimationFrame(animate);
+    animateID = requestAnimationFrame(animate);
+
+    if (game.gameOver) {
+      cancelAnimationFrame(animateID);
+      restartButton.style.display = "block";
     }
   }
-  animate();
 });

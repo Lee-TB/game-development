@@ -18,7 +18,7 @@ export class Player {
     this.width = 100;
     this.height = 91.3;
     this.ground = this.game.height - this.height - this.game.groundMargin;
-    this.x = 0;
+    this.x = this.game.width/2 - this.width/2;
     this.y = this.ground;
     this.vy = 0;
     this.jumpPower = 15;

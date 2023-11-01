@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: rgb(72, 72, 72);
+}
+
 #canvas1 {
   border: 5px solid black;
   position: absolute;
@@ -27,4 +31,45 @@
 #collisionAnimation,
 #lives {
   display: none;
+}
+
+#startButton, #restartButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);  
+}
+
+#restartButton {
+  width: 32px;
+  display: none;
+  transform: translate(-50%, 100%);  
+}
+
+#restartButton img {
+  width: 100%;
+}
+
+#startButton:hover,
+#restartButton:hover {
+  cursor: pointer;
+}
+
+#resumeButton, #pauseButton{
+  display: none;
+}
+
+#start_background {
+  display: none;
+}
+
+.grow{
+  transition: .5s, color .10s;
+      -webkit-transition: .5s, color .10s;
+      -moz-transition: .5s, color .10s;
+}
+.grow:hover{
+  transform: scale3d(1.5, 1.5, 0.3);
+      -webkit-transform: scale3d(1.5, 1.5, 0.3);
+      -moz-transform: scale3d(1.5, 1.5, 0.3);
 }
